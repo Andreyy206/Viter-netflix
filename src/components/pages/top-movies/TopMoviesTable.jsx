@@ -1,13 +1,17 @@
-  
-import LoaderTable from '@/components/partials/LoaderTable';
-import Pill from '@/components/partials/Pill';
-import SpinnerTable from '@/components/partials/spinners/SpinnerTable';
-import { Archive, ArchiveRestore, FileVideo, Pencil, Plus, Search, Trash } from 'lucide-react'
-import React from 'react'
-import MoviesModalView from './MoviesModalView';
-import MoviesModalAdd from './MoviesModalAdd';
-import NoData from '@/components/partials/icons/NoData';
-import ServerError from '@/components/partials/icons/ServerError';
+import NoData from "@/components/partials/icons/NoData";
+import ServerError from "@/components/partials/icons/ServerError";
+import Pill from "@/components/partials/Pill";
+import {
+    Archive,
+    ArchiveRestore,
+    FileVideo,
+    Pencil,
+    Plus,
+    Search,
+    Trash,
+} from "lucide-react";
+import TopMoviesModalAdd from "./TopMoviesModalAdd";
+import TopMoviesModalView from "./TopMoviesModalView";
 
 const MoviesTable = () => {
   return (
@@ -98,10 +102,10 @@ const MoviesTable = () => {
           </table>
         </div>
       </div>
-      {/* <MoviesModalView /> */}
-      {/* <MoviesModalAdd/> */}
+      {/* <TopMoviesModalView /> */}
+      {/* <TopMoviesModalAdd/> */}
     </>
   );
-}
+};
 
-export default MoviesTable
+export default MoviesTable;

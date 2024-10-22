@@ -10,6 +10,8 @@ import ModalConfirm from '@/components/partials/modals/ModalConfirm';
 import ModalDelete from '@/components/partials/modals/ModalDelete';
 import ModalValidate from '@/components/partials/modals/ModalValidate';
 import ModalError from '@/components/partials/modals/ModalError';
+import ToastSuccess from '@/components/partials/ToastSuccess';
+import SpinnerWindow from '@/components/partials/spinners/SpinnerWindow';
 
 const Movies = () => {
   return (
@@ -29,6 +31,9 @@ const Movies = () => {
       {/* <ModalDelete/> */}
       {/* <ModalValidate/> */}
       {/* <ModalError/> */}
+      {/* <ToastSuccess/> */}
+      {/* <SpinnerWindow/> */}
+      
     </div>
   );
 }

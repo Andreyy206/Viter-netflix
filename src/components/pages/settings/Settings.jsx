@@ -27,7 +27,7 @@ const Settings = () => {
 
         <div className='m-8'>
           <nav className="mb-10">
-            {/* <ul className='flex gap-10 mb-3 border-b border-line'>
+            <ul className='flex gap-10 mb-3 border-b border-line'>
               <li>
                 <button onClick={()=>handleSettingTab(0)} className={`tab-link ${currentSettings === 0 ? "active" : "" }`}>Category</button>
               </li>
@@ -37,10 +37,10 @@ const Settings = () => {
               <li>
                 <button onClick={()=>handleSettingTab(2)} className={`tab-link ${currentSettings === 2 ? "active" : "" }`}>Ratings</button>
               </li>
-            </ul>  */}
+            </ul> 
           </nav>
           
-           {/* {settingsTable[currentSettings]} */}
+           {settingsTable[currentSettings]}
 
       
           
