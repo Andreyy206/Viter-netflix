@@ -14,6 +14,7 @@ import ToastSuccess from '@/components/partials/ToastSuccess';
 import SpinnerWindow from '@/components/partials/spinners/SpinnerWindow';
 
 const Movies = () => {
+  console.log('asd')
   return (
     <div>
       <section className='flex min-h-screen bg-secondary'>

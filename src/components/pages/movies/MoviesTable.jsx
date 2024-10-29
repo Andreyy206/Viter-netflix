@@ -8,8 +8,54 @@ import MoviesModalView from './MoviesModalView';
 import MoviesModalAdd from './MoviesModalAdd';
 import NoData from '@/components/partials/icons/NoData';
 import ServerError from '@/components/partials/icons/ServerError';
+import useQueryData from '@/components/custom-hook/useQueryData';
+import ModalDelete from '@/components/partials/modals/ModalDelete';
+import ModalConfirm from '@/components/partials/modals/ModalConfirm';
+import ToastSuccess from '@/components/partials/ToastSuccess';
 
 const MoviesTable = () => {
+  const[isConfirm, setIsConfirm] = React.useState(false); //Show/Hide nang modalConfirm
+  const[isDelete, setIsDelete] = React.useState(false); //Show/Hide nang modalDelete
+  const[isSuccess, setIsSuccess] = React.useState(false); //Show/Hide nang toastSuccess
+  const[id, setId] = React.useState(null);
+  const[isActive, setIsActive] = React.useState(0);
+  let counter = 0
+  const {
+
+  } = useQueryData(
+
+  );
+
+
+     const {
+       isLoading,
+       isFetching,
+       error,
+       data: result,
+     } = useQueryData(
+       `/v1/movies`, // endpoint
+       "get", // method
+       "movies"
+     );
+
+     const handleArchive = (item) => {
+      setIsConfirm(true)
+      setIsActive(0)
+      setId(item.movies_aid)
+
+     }
+     const handleRestore = (item) => {
+      setIsConfirm(true)
+      setIsActive(1)
+      setId(item.movies_aid)
+
+     }
+     const handleDelete = (item) => {
+      setIsDelete(true)
+     }
+
+     console.log(result);
+
   return (
     <>
       <div className='p-4 m-4'>
@@ -33,7 +79,7 @@ const MoviesTable = () => {
           </button>
         </div>
         <div className='table_wrapper bg-primary p-4 mt-5 rounded-md'>
-          {/* <SpinnerTable /> */}
+          {!isLoading || (isFetching && <SpinnerTable />)}
           <table className='w-full'>
             <thead>
               <tr>
@@ -45,63 +91,113 @@ const MoviesTable = () => {
             </thead>
 
             <tbody>
-              <tr>
-                <td colSpan='100%'>
-                  <NoData />
-                </td>
-              </tr>
+              {((isLoading && !isFetching) || result?.data.length === 0) && (
+                <tr>
+                  <td colSpan='100%'>
+                    {isLoading ? (
+                      <LoaderTable count={30} cols={6} />
+                    ) : (
+                      <NoData />
+                    )}
+                  </td>
+                </tr>
+              )}
 
-              <tr>
-                <td colSpan='100%'>
-                  <ServerError />
-                </td>
-              </tr>
+              {error && (
+                <tr>
+                  <td colSpan='100%'>
+                    <ServerError />
+                  </td>
+                </tr>
+              )}
 
-              <tr>
-                <td>1.</td>
-                <td>Tarzan - Ganda Lalake</td>
-                <td>1992</td>
-                <td>
-                  <Pill />
-                </td>
-                <td>
-                  <ul className='table-action'>
-                    <li>
-                      <button data-tooltip='View'>
-                        <FileVideo size={15} />
-                      </button>
-                    </li>
-                    <li>
-                      <button data-tooltip='Edit'>
-                        <Pencil size={15} />
-                      </button>
-                    </li>
-                    <li>
-                      <button data-tooltip='Archive'>
-                        <Archive size={15} />
-                      </button>
-                    </li>
-                    <li>
-                      <button data-tooltip='Restore'>
-                        <ArchiveRestore size={15} />
-                      </button>
-                    </li>
-                    <li>
-                      <button data-tooltip='Delete'>
-                        <Trash size={15} />
-                      </button>
-                    </li>
-                  </ul>
-                </td>
-              </tr>
+              {result?.data.map((item, key) => {
+                counter++;
+                return (
+                  <tr key={key}>
+                    <td>{counter}.</td>
+                    <td>{item.movies_title}</td>
+                    <td>{item.movies_year}</td>
+                    <td>
+                      <Pill isActive={item.movies_is_active} />
+                    </td>
+
+                    <td>
+                      <ul className='table-action'>
+                        {item.movies_is_active ? (
+                          <>
+                            <li>
+                              <button data-tooltip='View'>
+                                <FileVideo size={15} />
+                              </button>
+                            </li>
+                            <li>
+                              <button data-tooltip='Edit'>
+                                <Pencil size={15} />
+                              </button>
+                            </li>
+                            <li>
+                              <button
+                                data-tooltip='Archive'
+                                onClick={() => handleArchive(item)}
+                              >
+                                <Archive size={15} />
+                              </button>
+                            </li>
+                          </>
+                        ) : (
+                          <>
+                            <li>
+                              <button
+                                data-tooltip='Restore'
+                                onClick={() => handleRestore(item)}
+                              >
+                                <ArchiveRestore size={15} />
+                              </button>
+                            </li>
+                            <li>
+                              <button
+                                data-tooltip='Delete'
+                                onClick={() => handleDelete(item)}
+                              >
+                                <Trash size={15} />
+                              </button>
+                            </li>
+                          </>
+                        )}
+                      </ul>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
       </div>
+
+      {isConfirm && (
+        <ModalConfirm
+          setIsComfirm={setIsConfirm}
+          queryKey='movies'
+          mysqlApiArchive={`/v1/movies/active/${id}`}
+          active={isActive}
+          setIsSuccess={setIsSuccess}
+        />
+      )}
+      {isDelete && (
+        <ModalDelete
+          setIsDelete={setIsDelete}
+          mysqlApiDelete={`/v1/movies/${id}`}
+          queryKey='movies'
+          setIsSuccess={setIsSuccess}
+        />
+      )}
+
+      {isSuccess && <ToastSuccess setIsSuccess={setIsSuccess} />}
+
       {/* <MoviesModalView /> */}
       {/* <MoviesModalAdd/> */}
     </>
   );
 }
-
 export default MoviesTable

@@ -233,3 +233,18 @@
   }
 }
 
+.counter {
+  -webkit-text-stroke: 7px ;
+  -webkit-text-fill-color: transparent;
+  text-stroke: 7px ;
+  -webkit-text-stroke-color: white;
+}
+.slick-arrow{
+  @apply -top-1 right-5
+}
+
+.slick-arrow.slick-prev{
+@apply left-[calc(100%-5rem)]
+}
+
+

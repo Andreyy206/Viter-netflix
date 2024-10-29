@@ -1,14 +1,45 @@
 import { CircleHelp, X } from 'lucide-react'
 import React from 'react'
 import ModalWrapper from './ModalWrapper';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { queryData } from '@/components/helpers/queryData';
 
 
-const ModalConfirm = () => {
+const ModalConfirm = ({ setIsComfirm, mysqlApiArchive, queryKey, active, setIsSuccess }) => {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: (values) => queryData(mysqlApiArchive, "put", values),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: [queryKey] });
+
+      if (data.success) {
+        //  dispatch(setValidate(true));
+        //  dispatch(setMessage(data.error));
+        setIsComfirm(false);
+        setIsSuccess(true);
+      } else {
+        //  dispatch(setIsConfirm(false));
+        //  dispatch(setSuccess(true));
+        //  dispatch(setMessage("Record updated"));
+      }
+    },
+  });
+
+  const handleYes = async () => {
+    mutation.mutate({
+      isActive: active ? 1 : 0,
+    });
+  };
+  const handleClose = () => setIsComfirm(false);
+
   return (
     <ModalWrapper>
       <div className='modal-main bg-primary absolute z-50 max-w-[350px] w-full rounded-md'>
         <div className='modal-header p-2 border-b border-line flex justify-between items-center'>
-          <h3 className='mb-0 leading-none text-warning'>Confirm</h3>
+          <h3 className='mb-0 leading-none text-warning' onClick={handleClose}>
+            Confirm
+          </h3>
           <button>
             <X />
           </button>
@@ -23,14 +54,21 @@ const ModalConfirm = () => {
           </p>
         </div>
         <div className='modal-footer flex py-2 border-t border-line justify-end gap-3 px-4'>
-          <button className='btn btn-warning ' strokeWidth={1} size={30}>
+          <button
+            className='btn btn-warning '
+            strokeWidth={1}
+            size={30}
+            onClick={handleYes}
+          >
             Continue
           </button>
-          <button className='btn btn-cancel'>Cancel</button>
+          <button className='btn btn-cancel' onClick={handleClose}>
+            Cancel
+          </button>
         </div>
       </div>
     </ModalWrapper>
   );
-}
+};
 
 export default ModalConfirm
