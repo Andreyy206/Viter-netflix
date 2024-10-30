@@ -12,12 +12,22 @@ import useQueryData from '@/components/custom-hook/useQueryData';
 import ModalDelete from '@/components/partials/modals/ModalDelete';
 import ModalConfirm from '@/components/partials/modals/ModalConfirm';
 import ToastSuccess from '@/components/partials/ToastSuccess';
+import ModalValidate from '@/components/partials/modals/ModalValidate';
 
 const MoviesTable = () => {
   const[isConfirm, setIsConfirm] = React.useState(false); //Show/Hide nang modalConfirm
   const[isDelete, setIsDelete] = React.useState(false); //Show/Hide nang modalDelete
   const[isSuccess, setIsSuccess] = React.useState(false); //Show/Hide nang toastSuccess
+  const[isAdd, setIsAdd] = React.useState(false); //Show/Hide nang ModalAdd
+  const[isView, setIsView] = React.useState(false); //Show/Hide nang ModalView
+  const[isValidate, setIsValidate] = React.useState(false);
+  const[message, setMessage] = React.useState('');
+  
+
+
+
   const[id, setId] = React.useState(null);
+  const[itemEdit, setItemEdit] = React.useState(0);
   const[isActive, setIsActive] = React.useState(0);
   let counter = 0
   const {
@@ -25,6 +35,18 @@ const MoviesTable = () => {
   } = useQueryData(
 
   );
+
+
+  const handleAdd =() => {
+    setIsAdd (true)
+    setItemEdit(null);
+
+  }
+
+   const handleEdit =(item) => {
+    setIsAdd(true)
+    setItemEdit(item)
+   }
 
 
      const {
@@ -50,8 +72,15 @@ const MoviesTable = () => {
       setId(item.movies_aid)
 
      }
+     const handleView = (item) => {
+      setIsView(true)
+      setItemEdit(item)
+     }
+
+
      const handleDelete = (item) => {
       setIsDelete(true)
+      
      }
 
      console.log(result);
@@ -73,7 +102,7 @@ const MoviesTable = () => {
               />
             </div>
           </form>
-          <button className='btn btn-accent'>
+          <button className='btn btn-accent ' onClick={handleAdd}>
             <Plus size={14} />
             Add New
           </button>
@@ -127,12 +156,18 @@ const MoviesTable = () => {
                         {item.movies_is_active ? (
                           <>
                             <li>
-                              <button data-tooltip='View'>
+                              <button
+                                data-tooltip='View'
+                                onClick={() => handleView(item)}
+                              >
                                 <FileVideo size={15} />
                               </button>
                             </li>
                             <li>
-                              <button data-tooltip='Edit'>
+                              <button
+                                data-tooltip='Edit'
+                                onClick={() => handleEdit(item)}
+                              >
                                 <Pencil size={15} />
                               </button>
                             </li>
@@ -193,7 +228,21 @@ const MoviesTable = () => {
         />
       )}
 
+      {isAdd && (
+        <MoviesModalAdd
+          setIsAdd={setIsAdd}
+          setIsSuccess={setIsSuccess}
+          itemEdit={itemEdit}
+          setIsValidate={setIsValidate}
+        />
+      )}
+
+      {isView && <MoviesModalView 
+      itemEdit={itemEdit} 
+      setIsView={setIsView} />}
+
       {isSuccess && <ToastSuccess setIsSuccess={setIsSuccess} />}
+      {isValidate && <ModalValidate setIsValidate={setIsValidate} message={message} />}
 
       {/* <MoviesModalView /> */}
       {/* <MoviesModalAdd/> */}

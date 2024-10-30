@@ -2,7 +2,8 @@ import { CircleAlert, MessageCircleWarning, X } from 'lucide-react';
 import React from 'react'
 import ModalWrapper from './ModalWrapper';
 
-const ModalValidate = () => {
+const ModalValidate = ({setIsValidate, message}) => {
+  const handleClose = () => setIsValidate(false)
   return (
     <ModalWrapper>
       <div className='modal-main bg-primary z-50 max-w-[350px] w-full rounded-md'>
@@ -16,12 +17,12 @@ const ModalValidate = () => {
           </div>
           <h2 className='mt-5 mb-3'>Validation Issue</h2>
           <p className='mt-3 mb-5 text-balance'>
-            The title is already exist
+            {message}
           </p>
         </div>
 
         <div className='modal-footer flex py-2 px-4 border-t border-line justify-end gap-3'>
-          <button className='btn btn-info w-full text-center block'>
+          <button className='btn btn-info w-full text-center block' onClick={handleClose}>
             Okay
           </button>
         </div>

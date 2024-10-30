@@ -16,7 +16,7 @@ const ModalConfirm = ({ setIsComfirm, mysqlApiArchive, queryKey, active, setIsSu
       if (data.success) {
         //  dispatch(setValidate(true));
         //  dispatch(setMessage(data.error));
-        setIsComfirm(false);
+        setIsConfirm(false);
         setIsSuccess(true);
       } else {
         //  dispatch(setIsConfirm(false));
