@@ -10,7 +10,7 @@ class TopMovies
     public $topmovies_summary;
     public $topmovies_cast;
     public $topmovies_image;
-    public $topmovies_category;
+    public $topmovies_ranking;
     
 
     public $topmovies_is_active;
@@ -20,7 +20,7 @@ class TopMovies
     public $connection;
     public $lastInsertedId;
 
-    public $tblMovies;
+    public $tblTopMovies;
 
     public $topmovies_start;
     public $topmovies_total;
@@ -29,14 +29,14 @@ class TopMovies
     public function __construct($db)
     {
         $this->connection = $db;
-        $this->tblMovies = "netflix_top_movies";
+        $this->tblTopMovies = "netflix_top_movies";
     }
 
     // create
     public function create()
     {
         try {
-            $sql = "insert into {$this->tblMovies} ";
+            $sql = "insert into {$this->tblTopMovies} ";
             $sql .= "( topmovies_title, ";
             $sql .= "topmovies_year, ";
             $sql .= "topmovies_genre, ";
@@ -57,7 +57,7 @@ class TopMovies
             $sql .= ":topmovies_summary, ";
             $sql .= ":topmovies_cast, ";
             $sql .= ":topmovies_image, ";
-            $sql .= ":topmovies_category, ";
+            $sql .= ":topmovies_ranking, ";
             $sql .= ":topmovies_is_active, ";
             $sql .= ":topmovies_datetime, ";
             $sql .= ":topmovies_created ) ";
@@ -71,7 +71,7 @@ class TopMovies
                 "topmovies_summary" => $this->topmovies_summary,
                 "topmovies_cast" => $this->topmovies_cast,
                 "topmovies_image" => $this->topmovies_image,
-                "topmovies_category" => $this->topmovies_category,
+                "topmovies_ranking" => $this->topmovies_ranking,
                 "topmovies_is_active" => $this->topmovies_is_active,
                 "topmovies_datetime" => $this->topmovies_datetime,
                 "topmovies_created" => $this->topmovies_created,
@@ -87,9 +87,9 @@ class TopMovies
     public function readAll()
     {
         try {
-            $sql = "select * from {$this->tblMovies} ";
+            $sql = "select * from {$this->tblTopMovies} ";
             $sql .= "order by topmovies_is_active desc, ";
-            $sql .= "topmovies_title asc ";
+            $sql .= "topmovies_ranking asc ";
             $query = $this->connection->query($sql);
         } catch (PDOException $ex) {
             $query = false;
@@ -101,7 +101,7 @@ class TopMovies
     public function readLimit()
     {
         try {
-            $sql = "select * from {$this->tblMovies} ";
+            $sql = "select * from {$this->tblTopMovies} ";
             $sql .= "order by topmovies_is_active desc, ";
             $sql .= "topmovies_title asc ";
             $sql .= "limit :start, ";
@@ -121,7 +121,7 @@ class TopMovies
     public function search()
     {
         try {
-            $sql = "select * from {$this->tblMovies} ";
+            $sql = "select * from {$this->tblTopMovies} ";
             $sql .= "where topmovies_title like :topmovies_title ";
             $sql .= "order by topmovies_is_active desc ";
             $query = $this->connection->prepare($sql);
@@ -139,7 +139,7 @@ class TopMovies
     public function readById()
     {
         try {
-            $sql = "select * from {$this->tblMovies} ";
+            $sql = "select * from {$this->tblTopMovies} ";
             $sql .= "where topmovies_aid  = :topmovies_aid ";
             $sql .= "order by topmovies_is_active desc ";
             $query = $this->connection->prepare($sql);
@@ -156,7 +156,7 @@ class TopMovies
     public function update()
     {
         try {
-            $sql = "update {$this->tblMovies} set ";
+            $sql = "update {$this->tblTopMovies} set ";
             $sql .= "topmovies_title = :topmovies_title, ";
             $sql .= "topmovies_year = :topmovies_year, ";
             $sql .= "topmovies_genre = :topmovies_genre, ";
@@ -165,7 +165,7 @@ class TopMovies
             $sql .= "topmovies_summary = :topmovies_summary, ";
             $sql .= "topmovies_cast = :topmovies_cast, ";
             $sql .= "topmovies_image = :topmovies_image, ";
-            $sql .= "topmovies_category = :topmovies_category, ";
+            $sql .= "topmovies_ranking = :topmovies_ranking, ";
             $sql .= "topmovies_datetime = :topmovies_datetime ";
             $sql .= "where topmovies_aid = :topmovies_aid ";
             $query = $this->connection->prepare($sql);
@@ -178,7 +178,7 @@ class TopMovies
                 "topmovies_summary" => $this->topmovies_summary,
                 "topmovies_cast" => $this->topmovies_cast,
                 "topmovies_image" => $this->topmovies_image,
-                "topmovies_category" => $this->topmovies_category,
+                "topmovies_ranking" => $this->topmovies_ranking,
                 "topmovies_datetime" => $this->topmovies_datetime,
                 "topmovies_aid" => $this->topmovies_aid,
             ]);
@@ -192,7 +192,7 @@ class TopMovies
     public function active()
     {
         try {
-            $sql = "update {$this->tblMovies} set ";
+            $sql = "update {$this->tblTopMovies} set ";
             $sql .= "topmovies_is_active = :topmovies_is_active, ";
             $sql .= "topmovies_datetime = :topmovies_datetime ";
             $sql .= "where topmovies_aid = :topmovies_aid ";
@@ -212,7 +212,7 @@ class TopMovies
     public function delete()
     {
         try {
-            $sql = "delete from {$this->tblMovies} ";
+            $sql = "delete from {$this->tblTopMovies} ";
             $sql .= "where topmovies_aid = :topmovies_aid  ";
             $query = $this->connection->prepare($sql);
             $query->execute([
@@ -228,7 +228,7 @@ class TopMovies
     public function checkName()
     {
         try {
-            $sql = "select topmovies_title from {$this->tblMovies} ";
+            $sql = "select topmovies_title from {$this->tblTopMovies} ";
             $sql .= "where topmovies_title = :topmovies_title ";
             $query = $this->connection->prepare($sql);
             $query->execute([
@@ -244,7 +244,7 @@ class TopMovies
     // public function checkAssociation()
     // {
     //     try {
-    //         $sql = "select product_topmovies_id from {$this->tblMovies} ";
+    //         $sql = "select product_topmovies_id from {$this->tblTopMovies} ";
     //         $sql .= "where product_topmovies_id = :product_topmovies_id ";
     //         $query = $this->connection->prepare($sql);
     //         $query->execute([
@@ -261,7 +261,7 @@ class TopMovies
     {
         try {
             $sql = "select * ";
-            $sql .= "from {$this->tblMovies} ";
+            $sql .= "from {$this->tblTopMovies} ";
             $sql .= "where topmovies_is_active = :topmovies_is_active  ";
             $sql .= "order by topmovies_is_active desc ";
             $query = $this->connection->prepare($sql);
@@ -278,7 +278,7 @@ class TopMovies
     {
         try {
             $sql = "select * ";
-            $sql .= "from {$this->tblMovies} ";
+            $sql .= "from {$this->tblTopMovies} ";
             $sql .= "where ";
             $sql .= "topmovies_is_active = :topmovies_is_active ";
             $sql .= "and topmovies_title like :topmovies_title ";

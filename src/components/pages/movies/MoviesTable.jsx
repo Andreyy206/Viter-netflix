@@ -1,89 +1,84 @@
-  
-import LoaderTable from '@/components/partials/LoaderTable';
-import Pill from '@/components/partials/Pill';
-import SpinnerTable from '@/components/partials/spinners/SpinnerTable';
-import { Archive, ArchiveRestore, FileVideo, Pencil, Plus, Search, Trash } from 'lucide-react'
-import React from 'react'
-import MoviesModalView from './MoviesModalView';
-import MoviesModalAdd from './MoviesModalAdd';
-import NoData from '@/components/partials/icons/NoData';
-import ServerError from '@/components/partials/icons/ServerError';
-import useQueryData from '@/components/custom-hook/useQueryData';
-import ModalDelete from '@/components/partials/modals/ModalDelete';
-import ModalConfirm from '@/components/partials/modals/ModalConfirm';
-import ToastSuccess from '@/components/partials/ToastSuccess';
-import ModalValidate from '@/components/partials/modals/ModalValidate';
+import LoaderTable from "@/components/partials/LoaderTable";
+import Pill from "@/components/partials/Pill";
+import SpinnerTable from "@/components/partials/spinners/SpinnerTable";
+import {
+  Archive,
+  ArchiveRestore,
+  FileVideo,
+  Pencil,
+  Plus,
+  Search,
+  Trash,
+} from "lucide-react";
+import React from "react";
+import MoviesModalView from "./MoviesModalView";
+import MoviesModalAdd from "./MoviesModalAdd";
+import NoData from "@/components/partials/icons/NoData";
+import ServerError from "@/components/partials/icons/ServerError";
+import useQueryData from "@/components/custom-hook/useQueryData";
+import ModalDelete from "@/components/partials/modals/ModalDelete";
+import ModalConfirm from "@/components/partials/modals/ModalConfirm";
+import ToastSuccess from "@/components/partials/ToastSuccess";
+import ModalValidate from "@/components/partials/modals/ModalValidate";
+import { StoreContext } from "@/components/store/storeContext";
+import { setIsConfirm, setIsDelete } from "@/components/store/storeAction";
 
 const MoviesTable = () => {
-  const[isConfirm, setIsConfirm] = React.useState(false); //Show/Hide nang modalConfirm
-  const[isDelete, setIsDelete] = React.useState(false); //Show/Hide nang modalDelete
-  const[isSuccess, setIsSuccess] = React.useState(false); //Show/Hide nang toastSuccess
-  const[isAdd, setIsAdd] = React.useState(false); //Show/Hide nang ModalAdd
-  const[isView, setIsView] = React.useState(false); //Show/Hide nang ModalView
-  const[isValidate, setIsValidate] = React.useState(false);
-  const[message, setMessage] = React.useState('');
+  const {store, dispatch} = React.useContext(StoreContext)
   
+  const [isSuccess, setIsSuccess] = React.useState(false); //Show/Hide of toastSuccess
+  const [isAdd, setIsAdd] = React.useState(false); //Show/Hide of modalAdd
+  const [isView, setIsView] = React.useState(false); //Show/Hide of modalView
+  const [isValidate, setIsValidate] = React.useState(false);
+  const [message, setMessage] = React.useState("");
 
+  const [id, setId] = React.useState(null);
+  const [itemEdit, setItemEdit] = React.useState(null);
+  const [isActive, setIsActive] = React.useState(0);
 
+  let counter = 0;
 
-  const[id, setId] = React.useState(null);
-  const[itemEdit, setItemEdit] = React.useState(0);
-  const[isActive, setIsActive] = React.useState(0);
-  let counter = 0
   const {
-
+    isLoading,
+    isFetching,
+    error,
+    data: result,
   } = useQueryData(
-
+    `/v1/movies`, // endpoint
+    "get", // method
+    "movies"
   );
 
-
-  const handleAdd =() => {
-    setIsAdd (true)
+  const handleAdd = () => {
+    setIsAdd(true);
     setItemEdit(null);
+  };
 
-  }
+  const handleEdit = (item) => {
+    setIsAdd(true);
+    setItemEdit(item);
+  };
 
-   const handleEdit =(item) => {
-    setIsAdd(true)
-    setItemEdit(item)
-   }
+  const handleDelete = (item) => {
+    dispatch (setIsDelete(true));
+    setId(item.movies_aid)
+  };
 
+  const handleArchive = (item) => {
+    dispatch(setIsConfirm(true))
+    setIsActive(0);
+    setId(item.movies_aid);
+  };
+  const handleRestore = (item) => {
+    setIsConfirm(true);
+    setIsActive(1);
+    setId(item.movies_aid);
+  };
 
-     const {
-       isLoading,
-       isFetching,
-       error,
-       data: result,
-     } = useQueryData(
-       `/v1/movies`, // endpoint
-       "get", // method
-       "movies"
-     );
-
-     const handleArchive = (item) => {
-      setIsConfirm(true)
-      setIsActive(0)
-      setId(item.movies_aid)
-
-     }
-     const handleRestore = (item) => {
-      setIsConfirm(true)
-      setIsActive(1)
-      setId(item.movies_aid)
-
-     }
-     const handleView = (item) => {
-      setIsView(true)
-      setItemEdit(item)
-     }
-
-
-     const handleDelete = (item) => {
-      setIsDelete(true)
-      
-     }
-
-     console.log(result);
+  const handleView = (item) => {
+    setIsView(true);
+    setItemEdit(item);
+  };
 
   return (
     <>
@@ -94,22 +89,23 @@ const MoviesTable = () => {
               <input
                 type='text'
                 placeholder='keyword'
-                className='bg-primary px-2 py-1 placeholder:opacity-30 outline-none border border-transparent focus:border-accent !pl-8 rounded-md !text-dark'
+                className='bg-primary px-2 py-1 placeholder:opacity-30 outline-none border border-transparent focus:border-accent !pl-8 !text-dark rounded-md'
               />
               <Search
-                className='absolute top-2.5 left-1.5 opacity-25 '
+                className='absolute top-2 left-1.5 opacity-25'
                 size={20}
               />
             </div>
           </form>
-          <button className='btn btn-accent ' onClick={handleAdd}>
+          <button className='btn btn-accent' onClick={handleAdd}>
             <Plus size={14} />
             Add New
           </button>
         </div>
-        <div className='table_wrapper bg-primary p-4 mt-5 rounded-md'>
+
+        <div className='table_wrapper bg-primary p-4 mt-5 rounded-md relative'>
           {!isLoading || (isFetching && <SpinnerTable />)}
-          <table className='w-full'>
+          <table>
             <thead>
               <tr>
                 <td>#</td>
@@ -150,7 +146,6 @@ const MoviesTable = () => {
                     <td>
                       <Pill isActive={item.movies_is_active} />
                     </td>
-
                     <td>
                       <ul className='table-action'>
                         {item.movies_is_active ? (
@@ -210,43 +205,28 @@ const MoviesTable = () => {
         </div>
       </div>
 
-      {isConfirm && (
+      {store.isConfirm && (
         <ModalConfirm
-          setIsComfirm={setIsConfirm}
           queryKey='movies'
           mysqlApiArchive={`/v1/movies/active/${id}`}
           active={isActive}
-          setIsSuccess={setIsSuccess}
         />
       )}
-      {isDelete && (
+      {store.isDelete && (
         <ModalDelete
           setIsDelete={setIsDelete}
           mysqlApiDelete={`/v1/movies/${id}`}
           queryKey='movies'
-          setIsSuccess={setIsSuccess}
         />
       )}
 
-      {isAdd && (
-        <MoviesModalAdd
-          setIsAdd={setIsAdd}
-          setIsSuccess={setIsSuccess}
-          itemEdit={itemEdit}
-          setIsValidate={setIsValidate}
-        />
-      )}
-
-      {isView && <MoviesModalView 
-      itemEdit={itemEdit} 
-      setIsView={setIsView} />}
-
-      {isSuccess && <ToastSuccess setIsSuccess={setIsSuccess} />}
-      {isValidate && <ModalValidate setIsValidate={setIsValidate} message={message} />}
-
-      {/* <MoviesModalView /> */}
-      {/* <MoviesModalAdd/> */}
+      {store.isAdd && <MoviesModalAdd itemEdit={itemEdit}/>}
+        
+      {isView && <MoviesModalView itemEdit={itemEdit} setIsView={setIsView} />}
+      {store.success && <ToastSuccess />}
+      {store.validate && <ModalValidate  />}
     </>
   );
-}
-export default MoviesTable
+};
+
+export default MoviesTable;

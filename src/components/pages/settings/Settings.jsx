@@ -11,7 +11,7 @@ import Ratings from "./ratings/Ratings";
 
 const Settings = () => {
     const [currentSettings, setCurrentSettings] = React.useState(0)
-    const settingsTable = [<Category />, <Genre />, <Ratings/> ]
+    const settingsTable = [<Category />, <Genre/>, <Ratings/> ]
 
     const handleSettingTab = (index) => setCurrentSettings(index)
 

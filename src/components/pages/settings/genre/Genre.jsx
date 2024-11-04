@@ -1,17 +1,28 @@
-import { Archive, ArchiveRestore, Pencil, Plus, Trash } from "lucide-react";
+import { Plus } from "lucide-react";
 import React from "react";
 import GenreAddForm from "./GenreAddForm";
 import GenreTable from "./GenreTable";
+import { setIsAdd } from "@/components/store/storeAction";
+import { StoreContext } from "@/components/store/storeContext";
 
 const Genre = () => {
-  const [isAdd, setIsAdd] = React.useState(false);
+
+  const { store, dispatch } = React.useContext(StoreContext);
+  const [itemEdit, setItemEdit] = React.useState(null);
+
+  const handleAdd = () => {
+    dispatch(setIsAdd(true));
+    setItemEdit(null);
+  };
   return (
     <section className='p-4'>
-      <button className='btn btn-accent' onClick={() => setIsAdd(true)}>
-        <Plus />
-        Add New
+      <button className='btn btn-accent' onClick={handleAdd}>
+        <Plus /> Add New
       </button>
-      {isAdd ? <GenreAddForm setIsAdd={setIsAdd} /> : <GenreTable />}
+
+      {store.isAdd && <GenreAddForm itemEdit={itemEdit} />}
+
+      <GenreTable setItemEdit={setItemEdit} />
     </section>
   );
 };

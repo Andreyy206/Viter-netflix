@@ -3,24 +3,24 @@ import ModalWrapper from './ModalWrapper';
 import { CircleAlert, CircleHelp, X } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryData } from '@/components/helpers/queryData';
+import { StoreContext } from '@/components/store/storeContext';
+import { setIsDelete } from '@/components/store/storeAction';
 
-const ModalDelete = ({setIsDelete, mysqlApiDelete, queryKey, setIsToast}) => {
+const ModalDelete = ({ mysqlApiDelete, queryKey, setIsToast}) => {
+  const { dispatch } = React.useContext(StoreContext);
 
    const queryClient = useQueryClient();
-
    const mutation = useMutation({
      mutationFn: (values) => queryData(mysqlApiDelete, "delete", values),
      onSuccess: (data) => {
        queryClient.invalidateQueries({ queryKey: [queryKey] });
        
-       if (!data.success) {
-        //  dispatch(setValidate(true));
-        //  dispatch(setMessage(data.error));
-        handleClose();
+       if (data.success) {
+         dispatch(setIsDelete(false));
+         dispatch(setSuccess(true));
        } else {
-      //    dispatch(setIsDelete(false));
-      //    dispatch(setSuccess(true));
-      //    dispatch(setMessage("Record Successfully Deleted"));
+         dispatch(setError(true));
+         dispatch(setMessage(data.error));
        }
      },
    });
@@ -30,7 +30,7 @@ const ModalDelete = ({setIsDelete, mysqlApiDelete, queryKey, setIsToast}) => {
       });
     };
 
-    const handleClose = () => setIsDelete(false)
+    const handleClose = () => dispatch(setIsDelete(false))
   return (
     <ModalWrapper>
       <div className='modal-main bg-primary absolute z-50 max-w-[350px] w-full rounded-md'>

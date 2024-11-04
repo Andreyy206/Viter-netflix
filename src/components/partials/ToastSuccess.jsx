@@ -1,8 +1,10 @@
 import { CheckCircle, X } from 'lucide-react'
 import React from 'react'
+import { StoreContext } from '../store/storeContext';
 
-const ToastSuccess = ({ setIsSuccess }) => {
-  const handleClose = () => setIsSuccess (false)
+const ToastSuccess = () => {
+  const {dispatch } = React.useContext(StoreContext);
+  const handleClose = () => dispatch(setIsSuccess (false))
 
   React.useEffect(() => {
     setTimeout(() => {

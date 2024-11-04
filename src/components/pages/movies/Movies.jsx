@@ -28,12 +28,7 @@ const Movies = () => {
 
         </main>
       </section>
-      {/* <ModalConfirm/> */}
-      {/* <ModalDelete/> */}
-      {/* <ModalValidate/> */}
-      {/* <ModalError/> */}
-      {/* <ToastSuccess/> */}
-      {/* <SpinnerWindow/> */}
+   
       
     </div>
   );

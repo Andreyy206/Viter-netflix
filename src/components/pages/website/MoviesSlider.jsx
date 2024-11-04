@@ -29,7 +29,7 @@ const MoviesSlider = ({ title = "", isTopTen = true, category }) => {
     slidesToShow: 5,
     slidesToScroll: 1,
     nextArrow: <SampleNextArrow />,
-    prevArrow: <SampleNextArrow />,
+    prevArrow: <SamplePrevArrow />,
   };
 
   return (
