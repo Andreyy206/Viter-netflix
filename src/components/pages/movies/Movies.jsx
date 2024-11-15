@@ -1,17 +1,7 @@
-import { devImgPath } from '@/components/helpers/functions-general';
 import Footer from '@/components/partials/Footer';
 import Header from '@/components/partials/Header';
-import { Archive, ArchiveRestore, Clapperboard, FileVideo, LayoutDashboard, Pencil, Plus, Search, Trash } from 'lucide-react';
-import React from 'react'
-import { Link } from 'react-router-dom';
-import MoviesTable from './MoviesTable';
 import Navigation from '@/components/partials/Navigation';
-import ModalConfirm from '@/components/partials/modals/ModalConfirm';
-import ModalDelete from '@/components/partials/modals/ModalDelete';
-import ModalValidate from '@/components/partials/modals/ModalValidate';
-import ModalError from '@/components/partials/modals/ModalError';
-import ToastSuccess from '@/components/partials/ToastSuccess';
-import SpinnerWindow from '@/components/partials/spinners/SpinnerWindow';
+import MoviesTable from './MoviesTable';
 
 const Movies = () => {
   console.log('asd')
